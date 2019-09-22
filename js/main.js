@@ -1,11 +1,6 @@
 'use strict';
 
-var randomizeElement = function (randomizedElement) {
-  return randomizedElement[Math.floor(Math.random() * randomizedElement.length)];
-};
-
-
-var COMMENT = [
+var COMMENTS = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
@@ -16,31 +11,41 @@ var COMMENT = [
 
 var NAMES = ['Артем', 'Василий', 'Катя', 'Шелдон', 'Кекс', 'Петр', 'Степан', 'Мария'];
 
+
+function randomInteger(min, max) {
+  var rand = min + Math.random() * (max + 1 - min);
+
+  return Math.floor(rand);
+}
+
 var createDescription = function () {
   var photoDescription = [];
-  for (var i = 1; i < 26; i++) {
+  var photoCount = 25;
+
+  for (var i = 0; i < photoCount + 1; i++) {
 
     photoDescription[i] = {
       url: 'photos/' + i + '.jpg',
-      likes: Math.floor((Math.random() * 186) + 15),
+      likes: randomInteger(15, 200),
       description: 'описание фотографии',
       comments: createComment()
     };
-
   }
+
   return photoDescription;
 };
 
 var createComment = function () {
   var createdComments = [];
-  var numberComments = Math.floor(Math.random() * 6);
+  var numberComments = randomInteger(1, 6);
   for (var i = 0; i < numberComments; i++) {
     createdComments[i] = {
-      avatar: 'img/avatar-' + Math.floor((Math.random() * 6) + 1) + '.svg',
-      message: randomizeElement(COMMENT),
-      name: randomizeElement(NAMES)
+      avatar: 'img/avatar-' + randomInteger(1, 6) + '.svg',
+      message: randomInteger(1, COMMENTS.length),
+      name: randomInteger(1, NAMES.length)
     };
   }
+
   return createdComments;
 };
 
@@ -55,6 +60,7 @@ var createPicture = function (description) {
   pictureElement.querySelector('.picture__img').src = description.url;
   pictureElement.querySelector('.picture__comments').textContent = description.comments.length;
   pictureElement.querySelector('.picture__likes').textContent = description.likes;
+
   return pictureElement;
 };
 
