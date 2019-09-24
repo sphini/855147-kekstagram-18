@@ -105,11 +105,10 @@ var createCommentsList = function (commentNumber) {
   return newElement;
 };
 
+var openBigPicture = function (picture) {
+  createBigPicture(pictureDescription[picture]);
 
-var openBigPicture = function (numberPicture) {
-  createBigPicture(pictureDescription[numberPicture]);
-
-  for (var f = 0; f < pictureDescription[numberPicture].comments.length; f++) {
+  for (var f = 0; f < pictureDescription[picture].comments.length; f++) {
     fragment.appendChild(createCommentsList(f));
   }
 
@@ -118,6 +117,5 @@ var openBigPicture = function (numberPicture) {
   document.querySelector('.social__comment-count').classList.add('visually-hidden');
   document.querySelector('.comments-loader').classList.add('visually-hidden');
 };
-
 
 openBigPicture(numberPicture);
