@@ -41,7 +41,7 @@ var createComment = function () {
   for (var i = 0; i < numberComments; i++) {
     createdComments[i] = {
       avatar: 'img/avatar-' + randomInteger(1, 6) + '.svg',
-      message: COMMENTS[randomInteger(0, COMMENTS.length)],
+      message: COMMENTS[randomInteger(0, COMMENTS.length - 1)],
       name: NAMES[randomInteger(0, NAMES.length)]
     };
   }
@@ -73,6 +73,7 @@ for (var i = 1; i < pictureDescription.length; i++) {
 sectionPictures.appendChild(fragment);
 
 document.querySelector('.big-picture').classList.remove('hidden');
+var numberPicture = 1;
 
 var createBigPicture = function (photoInfo) {
   var bigPictureElement = document.querySelector('.big-picture__img').children[0];
@@ -81,20 +82,18 @@ var createBigPicture = function (photoInfo) {
   bigPictureLikesElement.textContent = photoInfo.likes;
   var bigPictureCommentsElement = document.querySelector('.comments-count');
   bigPictureCommentsElement.textContent = photoInfo.comments.length;
-
+  var bigPictureDescription = document.querySelector('.social__caption');
+  bigPictureDescription.textContent = photoInfo.description;
 
 };
 
 var createCommentsList = function (commentNumber) {
-
-
-
   var newElement = document.createElement('li');
   newElement.className = 'social__comment';
   newElement.innerHTML = '<img>' + '<p>';
-  var commentAvatarUrl = pictureDescription[1].comments[commentNumber].avatar;
-  var commentName = pictureDescription[1].comments[commentNumber].name;
-  var commentMessage = pictureDescription[1].comments[commentNumber].message;
+  var commentAvatarUrl = pictureDescription[numberPicture].comments[commentNumber].avatar;
+  var commentName = pictureDescription[numberPicture].comments[commentNumber].name;
+  var commentMessage = pictureDescription[numberPicture].comments[commentNumber].message;
   newElement.children[0].className = 'social__picture';
   newElement.children[0].setAttribute('src', commentAvatarUrl);
   newElement.children[0].setAttribute('alt', commentName);
@@ -103,25 +102,22 @@ var createCommentsList = function (commentNumber) {
   newElement.children[1].className = 'social__text';
   newElement.children[1].textContent = commentMessage;
 
-  console.log(pictureDescription[1].comments[commentNumber].message);
-
-  return newElement
+  return newElement;
 };
 
-console.log(pictureDescription[1].comments.length);
+
+var openBigPicture = function (numberPicture) {
+  createBigPicture(pictureDescription[numberPicture]);
+
+  for (var f = 0; f < pictureDescription[numberPicture].comments.length; f++) {
+    fragment.appendChild(createCommentsList(f));
+  }
+
+  document.querySelector('.social__comments').innerHTML = '';
+  document.querySelector('.social__comments').appendChild(fragment);
+  document.querySelector('.social__comment-count').classList.add('visually-hidden');
+  document.querySelector('.comments-loader').classList.add('visually-hidden');
+};
 
 
-
-
-for (var i = 0; i < pictureDescription[1].comments.length; i++) {
-  // document.querySelector('.social__comments').appendChild(createCommentsList(i));
-  fragment.appendChild(createCommentsList(i));
-
-}
-document.querySelector('.social__comments').innerHTML = "";
-document.querySelector('.social__comments').appendChild(fragment);
-
-
-
-
-createBigPicture(pictureDescription[1]);
+openBigPicture(numberPicture);
