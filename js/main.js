@@ -76,7 +76,7 @@ document.querySelector('.big-picture').classList.remove('hidden');
 var numberPicture = 1;
 
 var createBigPicture = function (photoInfo) {
-  var bigPictureElement = document.querySelector('.big-picture__img').children[0];
+  var bigPictureElement = document.querySelector('.big-picture__img img');
   bigPictureElement.setAttribute('src', photoInfo.url);
   var bigPictureLikesElement = document.querySelector('.likes-count');
   bigPictureLikesElement.textContent = photoInfo.likes;
@@ -87,19 +87,15 @@ var createBigPicture = function (photoInfo) {
 
 };
 
+var bigPictureTemplate = document.querySelector('#big-picture').content.querySelector('.social__comment');
+
 var createCommentsList = function (commentNumber) {
-  var newElement = document.createElement('li');
-  newElement.className = 'social__comment';
-  newElement.innerHTML = '<img>' + '<p>';
+  var newElement = bigPictureTemplate.cloneNode(true);
   var commentAvatarUrl = pictureDescription[numberPicture].comments[commentNumber].avatar;
   var commentName = pictureDescription[numberPicture].comments[commentNumber].name;
   var commentMessage = pictureDescription[numberPicture].comments[commentNumber].message;
-  newElement.children[0].className = 'social__picture';
   newElement.children[0].setAttribute('src', commentAvatarUrl);
   newElement.children[0].setAttribute('alt', commentName);
-  newElement.children[0].setAttribute('width', '35');
-  newElement.children[0].setAttribute('height', '35');
-  newElement.children[1].className = 'social__text';
   newElement.children[1].textContent = commentMessage;
 
   return newElement;
