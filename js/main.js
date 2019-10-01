@@ -222,55 +222,78 @@ for (var f = 0; f < effects.length; f++) {
 var textHashtag = document.querySelector('.text__hashtags');
 var imgUploadSubmit = document.querySelector('.img-upload__submit');
 
-var checkCurrentTagLength = function (hashtags) {
-  if (hashtags > 5) {
-    textHashtag.setCustomValidity('Нельзя указать больше пяти хэш-тегов');
-  }
-};
-
-var checkOneHash = function (hashtag) {
-  if (hashtag === '#') {
-    textHashtag.setCustomValidity('Хеш-тег не может состоять только из одной решётки');
-  }
-};
-
-var checkByLetter = function (tagElement) {
-  var lettersHashtag = tagElement.split('');
-  if (lettersHashtag[0] !== '#') {
-    textHashtag.setCustomValidity('Хэш-тег начинается с символа # (решётка)');
-  } else if (lettersHashtag.length > 20) {
-    textHashtag.setCustomValidity('Максимальная длина одного хэш-тега 20 символов, включая решётку');
-  }
-};
-
-var checkSimilarHash = function (hashtags, tagElement) {
-  var currentTag = tagElement;
-  if (currentTag !== '') {
-    var numberSimilarTags = hashtags.filter(function (elem) {
-      return elem === currentTag;
-    });
-    if (numberSimilarTags.length > 1) {
-      textHashtag.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды!');
-    }
-  } else {
-    textHashtag.setCustomValidity('Хэш-теги разделяются пробелами');
-  }
-};
-
 var checkTagsHandler = function () {
-  textHashtag.setCustomValidity('');
-  var textHashtags = textHashtag.value.toLowerCase().split(' ');
-  checkCurrentTagLength(textHashtags.length);
-  for (var s = 0; s < textHashtags.length; s++) {
-    checkByLetter(textHashtags[s]);
-    checkOneHash(textHashtags[s]);
-    checkSimilarHash(textHashtags, textHashtags[s]);
-  }
-};
+  var hashtagsString = textHashtag.value;
 
+  if (hashtagsString === '' || hashtagsString.length === 1) {
+    return textHashtag.setCustomValidity('');
+  }
+
+  var hashtags = hashtagsString.toLowerCase().split(' ');
+
+  if (hashtags.length > 5) {
+    return textHashtag.setCustomValidity('Нельзя указать больше пяти хэш-тегов');
+  }
+
+
+  var firstHashFlag = false;
+  hashtags.forEach(function (hashtag) {
+    if (hashtag[0] !== '#') {
+      firstHashFlag = true;
+    }
+  });
+
+  var lengthHashFlag = false;
+  hashtags.forEach(function (hashtag) {
+    if (hashtag.length > 20) {
+      lengthHashFlag = true;
+    }
+  });
+
+  var onlyHashFlag = false;
+  hashtags.forEach(function (hashtag) {
+    if (hashtag === '#') {
+      onlyHashFlag = true;
+    }
+  });
+
+  if (firstHashFlag) {
+    return textHashtag.setCustomValidity('Хэш-тег начинается с символа # (решётка)');
+  }
+
+  if (onlyHashFlag) {
+    return textHashtag.setCustomValidity('Хеш-тег не может состоять только из одной решётки');
+  }
+
+  if (lengthHashFlag) {
+    return textHashtag.setCustomValidity('Максимальная длина одного хэш-тега 20 символов, включая решётку');
+  }
+
+  var checkSimilarHash = function (tags) {
+    for (var d = 0; d < tags.length; d++) {
+      var currentTag = tags[d];
+      var numberSimilarTags = tags.filter(function (elem) {
+        return elem === currentTag;
+      });
+      if (numberSimilarTags.length > 1) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  if (checkSimilarHash(hashtags)) {
+    return textHashtag.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды!');
+  }
+
+  return textHashtag.setCustomValidity('');
+};
 
 imgUploadSubmit.addEventListener('click', checkTagsHandler);
+textHashtag.addEventListener('input', checkTagsHandler);
 
+
+// Поведение окон
 
 var openImgUploadOverlay = function () {
   imgUploadOverlay.classList.remove('hidden');
