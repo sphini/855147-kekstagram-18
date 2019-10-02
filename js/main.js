@@ -235,26 +235,30 @@ var checkTagsHandler = function () {
     return textHashtag.setCustomValidity('Нельзя указать больше пяти хэш-тегов');
   }
 
-
   var firstHashFlag = false;
+  var onlyHashFlag = false;
+  var lengthHashFlag = false;
+
   hashtags.forEach(function (hashtag) {
     if (hashtag[0] !== '#') {
+      textHashtag.setCustomValidity('Хэш-тег начинается с символа # (решётка)');
       firstHashFlag = true;
+      return firstHashFlag;
     }
-  });
 
-  var lengthHashFlag = false;
-  hashtags.forEach(function (hashtag) {
-    if (hashtag.length > 20) {
-      lengthHashFlag = true;
-    }
-  });
-
-  var onlyHashFlag = false;
-  hashtags.forEach(function (hashtag) {
     if (hashtag === '#') {
+      textHashtag.setCustomValidity('Хеш-тег не может состоять только из одной решётки');
       onlyHashFlag = true;
+      return onlyHashFlag;
     }
+
+    if (hashtag.length > 20) {
+      textHashtag.setCustomValidity('Максимальная длина одного хэш-тега 20 символов, включая решётку');
+      lengthHashFlag = true;
+      return lengthHashFlag;
+    }
+
+    return textHashtag.setCustomValidity('');
   });
 
   if (firstHashFlag) {
