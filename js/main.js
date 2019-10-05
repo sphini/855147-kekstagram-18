@@ -82,6 +82,33 @@ for (var i = 1; i < pictureDescription.length; i++) {
   fragment.appendChild(createPicture(pictureDescription[i]))
 }
 
+//Отлавливаю элемент на котором произошло событие
+
+var getCurrentNumberElementClick = function () {
+  var picturesAll = document.querySelectorAll('.picture img');
+  var currentNumberPhoto = (Array.prototype.indexOf.call(picturesAll, event.target));
+  return currentNumberPhoto;
+}
+
+var photoContainer = document.querySelector('.pictures');
+photoContainer.addEventListener('click', onPictureClick);
+photoContainer.addEventListener('keydown', onPictureEnter);
+
+//Клик отрабатывается корректно и полученный индекс правильный
+
+function onPictureClick(event) {
+  event.preventDefault();
+  console.log(getCurrentNumberElementClick());
+}
+
+//Ентер отрабатывается, но возвращается неверный индекс -1
+
+function onPictureEnter(evt) {
+  if (evt.keyCode === 13) {
+    event.preventDefault();
+    console.log(getCurrentNumberElementClick());
+  }
+}
 
 
 
