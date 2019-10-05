@@ -98,8 +98,7 @@ photoContainer.addEventListener('keydown', onPictureEnter);
 
 function onPictureClick(event) {
   event.preventDefault();
-  var currentNumberPhoto = getCurrentNumberElementClick();
-  console.log(currentNumberPhoto)
+  console.log(getCurrentNumberElementClick());
 }
 
 //Ентер отрабатывается, но возвращается неверный индекс -1
@@ -107,8 +106,7 @@ function onPictureClick(event) {
 function onPictureEnter(evt) {
   if (evt.keyCode === 13) {
     event.preventDefault();
-    var currentNumberPhoto = getCurrentNumberElementClick();
-    console.log(currentNumberPhoto)
+    console.log(getCurrentNumberElementClick());
   }
 }
 
