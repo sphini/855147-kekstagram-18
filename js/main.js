@@ -42,7 +42,7 @@ var createComment = function () {
     createdComments[i] = {
       avatar: 'img/avatar-' + randomInteger(1, 6) + '.svg',
       message: COMMENTS[randomInteger(0, COMMENTS.length - 1)],
-      name: NAMES[randomInteger(0, NAMES.length)]
+      name: NAMES[randomInteger(0, NAMES.length - 1)]
     };
   }
 
@@ -66,13 +66,49 @@ var createPicture = function (description) {
 
 var fragment = document.createDocumentFragment();
 
-for (var i = 1; i < pictureDescription.length; i++) {
-  fragment.appendChild(createPicture(pictureDescription[i]));
+var clickBigPictureCloseHandler = function () {
+  document.querySelector('.big-picture').classList.add('hidden');
 }
 
-sectionPictures.appendChild(fragment);
+var openPopupBigImage = function () {
+  return document.querySelector('.big-picture').classList.remove('hidden');
+}
 
-var numberPicture = 1;
+
+
+
+for (var i = 1; i < pictureDescription.length; i++) {
+  fragment.appendChild(createPicture(pictureDescription[i]))
+}
+
+var getCurrentNumberElementClick = function () {
+  var picturesAll = document.querySelectorAll('.picture img');
+  var currentNumberPhoto = (Array.prototype.indexOf.call(picturesAll, event.target));
+  return currentNumberPhoto;
+}
+
+var photoContainer = document.querySelector('.pictures');
+photoContainer.addEventListener('click', onPictureClick);
+photoContainer.addEventListener('keydown', onPictureEnter);
+
+function onPictureClick(event) {
+  event.preventDefault();
+  var currentNumberPhoto = getCurrentNumberElementClick();
+  console.log(currentNumberPhoto)
+}
+
+function onPictureEnter(evt) {
+  if (evt.keyCode === 13) {
+    event.preventDefault();
+    var currentNumberPhoto = getCurrentNumberElementClick();
+    console.log(currentNumberPhoto)
+  }
+}
+
+
+
+
+sectionPictures.appendChild(fragment);
 
 var createBigPicture = function (photoInfo) {
   var bigPictureElement = document.querySelector('.big-picture__img img');
@@ -88,8 +124,9 @@ var createBigPicture = function (photoInfo) {
 
 var bigPictureTemplate = document.querySelector('#big-picture').content.querySelector('.social__comment');
 
-var createCommentsList = function (commentNumber) {
+var createCommentsList = function (commentNumber, numberPicture) {
   var newElement = bigPictureTemplate.cloneNode(true);
+  console.log(pictureDescription[numberPicture]);
   var commentAvatarUrl = pictureDescription[numberPicture].comments[commentNumber].avatar;
   var commentName = pictureDescription[numberPicture].comments[commentNumber].name;
   var commentMessage = pictureDescription[numberPicture].comments[commentNumber].message;
@@ -102,18 +139,21 @@ var createCommentsList = function (commentNumber) {
 
 var openBigPicture = function (picture) {
   createBigPicture(pictureDescription[picture]);
+  console.log(pictureDescription[picture])
 
   for (var f = 0; f < pictureDescription[picture].comments.length; f++) {
-    fragment.appendChild(createCommentsList(f));
+    fragment.appendChild(createCommentsList(f, picture));
   }
 
+
+  document.querySelector('.social__comments').innerHTML = '';
   document.querySelector('.social__comments').innerHTML = '';
   document.querySelector('.social__comments').appendChild(fragment);
   document.querySelector('.social__comment-count').classList.add('visually-hidden');
   document.querySelector('.comments-loader').classList.add('visually-hidden');
 };
 
-openBigPicture(numberPicture);
+
 
 var uploadFile = document.querySelector('input[id="upload-file"]');
 var scaleControlSmaller = document.querySelector('.scale__control--smaller');
@@ -221,6 +261,9 @@ for (var f = 0; f < effects.length; f++) {
 
 var textHashtag = document.querySelector('.text__hashtags');
 var imgUploadSubmit = document.querySelector('.img-upload__submit');
+var socialFooterText = document.querySelector('.social__footer-text');
+var socialFooterBtn = document.querySelector('.social__footer-btn');
+
 
 var checkTagsHandler = function () {
   var hashtagsString = textHashtag.value;
