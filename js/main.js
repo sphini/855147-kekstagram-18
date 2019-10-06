@@ -10,7 +10,8 @@ var COMMENTS = [
 ];
 
 var NAMES = ['Артем', 'Василий', 'Катя', 'Шелдон', 'Кекс', 'Петр', 'Степан', 'Мария'];
-
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 
 function randomInteger(min, max) {
   var rand = min + Math.random() * (max + 1 - min);
@@ -66,52 +67,71 @@ var createPicture = function (description) {
 
 var fragment = document.createDocumentFragment();
 
-var clickBigPictureCloseHandler = function () {
+var photoContainer = document.querySelector('.pictures');
+var socialFooterText = document.querySelector('.social__footer-text');
+
+
+photoContainer.addEventListener('click', pictureClickHandler);
+photoContainer.addEventListener('keydown', pictureEnterHandler);
+
+socialFooterText.addEventListener('focusin', function () {
+  photoContainer.removeEventListener('keydown', pictureEscHandler);
+});
+
+socialFooterText.addEventListener('focusout', function () {
+  photoContainer.addEventListener('keydown', pictureEscHandler);
+});
+
+
+var bigPictureClose = function () {
   document.querySelector('.big-picture').classList.add('hidden');
-}
+};
 
 var openPopupBigImage = function () {
-  return document.querySelector('.big-picture').classList.remove('hidden');
-}
-
-
-
+  document.querySelector('.big-picture').classList.remove('hidden');
+  photoContainer.addEventListener('keydown', pictureEscHandler);
+};
 
 
 for (var i = 1; i < pictureDescription.length; i++) {
-  fragment.appendChild(createPicture(pictureDescription[i]))
+  fragment.appendChild(createPicture(pictureDescription[i]));
 }
 
-//Отлавливаю элемент на котором произошло событие
 
-var getCurrentNumberElementClick = function () {
+var getCurrentNumberElementClick = function (target) {
+
   var picturesAll = document.querySelectorAll('.picture img');
-  var currentNumberPhoto = (Array.prototype.indexOf.call(picturesAll, event.target));
+  var currentNumberPhoto = (Array.prototype.indexOf.call(picturesAll, target)) + 1;
+
   return currentNumberPhoto;
-}
+};
 
-var photoContainer = document.querySelector('.pictures');
-photoContainer.addEventListener('click', onPictureClick);
-photoContainer.addEventListener('keydown', onPictureEnter);
-
-//Клик отрабатывается корректно и полученный индекс правильный
-
-function onPictureClick(event) {
-  event.preventDefault();
-  console.log(getCurrentNumberElementClick());
-}
-
-//Ентер отрабатывается, но возвращается неверный индекс -1
-
-function onPictureEnter(evt) {
-  if (evt.keyCode === 13) {
+var setElementClickToPicture = function () {
+  var clickTarget = event.target;
+  if (clickTarget.classList.contains('picture__img')) {
     event.preventDefault();
-    console.log(getCurrentNumberElementClick());
+    var currentNumberPhoto = getCurrentNumberElementClick(clickTarget);
+    openBigPicture(currentNumberPhoto);
+    openPopupBigImage();
+  }
+  document.querySelector('.big-picture__cancel').addEventListener('click', bigPictureClose);
+};
+
+function pictureClickHandler() {
+  setElementClickToPicture();
+}
+
+function pictureEnterHandler(event) {
+  if (event.keyCode === ENTER_KEYCODE) {
+    setElementClickToPicture();
   }
 }
 
-
-
+function pictureEscHandler(event) {
+  if (event.keyCode === ESC_KEYCODE) {
+    bigPictureClose();
+  }
+}
 
 
 sectionPictures.appendChild(fragment);
@@ -125,14 +145,12 @@ var createBigPicture = function (photoInfo) {
   bigPictureCommentsElement.textContent = photoInfo.comments.length;
   var bigPictureDescription = document.querySelector('.social__caption');
   bigPictureDescription.textContent = photoInfo.description;
-
 };
 
 var bigPictureTemplate = document.querySelector('#big-picture').content.querySelector('.social__comment');
 
 var createCommentsList = function (commentNumber, numberPicture) {
   var newElement = bigPictureTemplate.cloneNode(true);
-  console.log(pictureDescription[numberPicture]);
   var commentAvatarUrl = pictureDescription[numberPicture].comments[commentNumber].avatar;
   var commentName = pictureDescription[numberPicture].comments[commentNumber].name;
   var commentMessage = pictureDescription[numberPicture].comments[commentNumber].message;
@@ -145,7 +163,6 @@ var createCommentsList = function (commentNumber, numberPicture) {
 
 var openBigPicture = function (picture) {
   createBigPicture(pictureDescription[picture]);
-  console.log(pictureDescription[picture])
 
   for (var f = 0; f < pictureDescription[picture].comments.length; f++) {
     fragment.appendChild(createCommentsList(f, picture));
@@ -160,7 +177,6 @@ var openBigPicture = function (picture) {
 };
 
 
-
 var uploadFile = document.querySelector('input[id="upload-file"]');
 var scaleControlSmaller = document.querySelector('.scale__control--smaller');
 var scaleControlBigger = document.querySelector('.scale__control--bigger');
@@ -168,7 +184,6 @@ var scaleControlValue = document.querySelector('.scale__control--value');
 var imgUploadPreview = document.querySelector('.img-upload__preview img');
 var imgUploadOverlay = document.querySelector('.img-upload__overlay');
 var imgUploadCancel = document.querySelector('.img-upload__cancel');
-var ESC_KEYCODE = 27;
 
 // Масштаб
 
@@ -267,8 +282,6 @@ for (var f = 0; f < effects.length; f++) {
 
 var textHashtag = document.querySelector('.text__hashtags');
 var imgUploadSubmit = document.querySelector('.img-upload__submit');
-var socialFooterText = document.querySelector('.social__footer-text');
-var socialFooterBtn = document.querySelector('.social__footer-btn');
 
 
 var checkTagsHandler = function () {
