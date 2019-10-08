@@ -10,8 +10,10 @@ var COMMENTS = [
 ];
 
 var NAMES = ['Артем', 'Василий', 'Катя', 'Шелдон', 'Кекс', 'Петр', 'Степан', 'Мария'];
-var ESC_KEYCODE = 27;
-var ENTER_KEYCODE = 13;
+var Keycodes = {
+  ESC_KEYCODE: 27,
+  ENTER_KEYCODE: 13,
+};
 
 function randomInteger(min, max) {
   var rand = min + Math.random() * (max + 1 - min);
@@ -122,13 +124,13 @@ function pictureClickHandler() {
 }
 
 function pictureEnterHandler(event) {
-  if (event.keyCode === ENTER_KEYCODE) {
+  if (event.keyCode === Keycodes.ENTER_KEYCODE) {
     setElementClickToPicture();
   }
 }
 
 function pictureEscHandler(event) {
-  if (event.keyCode === ESC_KEYCODE) {
+  if (event.keyCode === Keycodes.ESC_KEYCODE) {
     bigPictureClose();
   }
 }
@@ -149,11 +151,11 @@ var createBigPicture = function (photoInfo) {
 
 var bigPictureTemplate = document.querySelector('#big-picture').content.querySelector('.social__comment');
 
-var createCommentsList = function (commentNumber, numberPicture) {
+var createCommentsList = function (commentIndex, pictureIndex) {
   var newElement = bigPictureTemplate.cloneNode(true);
-  var commentAvatarUrl = pictureDescription[numberPicture].comments[commentNumber].avatar;
-  var commentName = pictureDescription[numberPicture].comments[commentNumber].name;
-  var commentMessage = pictureDescription[numberPicture].comments[commentNumber].message;
+  var commentAvatarUrl = pictureDescription[pictureIndex].comments[commentIndex].avatar;
+  var commentName = pictureDescription[pictureIndex].comments[commentIndex].name;
+  var commentMessage = pictureDescription[pictureIndex].comments[commentIndex].message;
   newElement.children[0].setAttribute('src', commentAvatarUrl);
   newElement.children[0].setAttribute('alt', commentName);
   newElement.children[1].textContent = commentMessage;
@@ -169,7 +171,6 @@ var openBigPicture = function (picture) {
   }
 
 
-  document.querySelector('.social__comments').innerHTML = '';
   document.querySelector('.social__comments').innerHTML = '';
   document.querySelector('.social__comments').appendChild(fragment);
   document.querySelector('.social__comment-count').classList.add('visually-hidden');
@@ -371,7 +372,7 @@ var closeImgUploadOverlay = function () {
 };
 
 var enterCloseHandler = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
+  if (evt.keyCode === Keycodes.ESC_KEYCODE) {
     closeImgUploadOverlay();
   }
 };
