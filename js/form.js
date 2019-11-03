@@ -37,7 +37,6 @@
   // Визуальные эффекты
 
   var effectLevelPin = document.querySelector('.effect-level__pin');
-  var effectLevelValue = document.querySelector('.effect-level__value');
   var effectOriginal = document.querySelector('input[id="effect-none"]');
   var effectChrome = document.querySelector('input[id="effect-chrome"]');
   var effectSepia = document.querySelector('input[id="effect-sepia"]');
@@ -70,8 +69,6 @@
     if (effectHeat.checked) {
       imgUploadPreview.style.filter = 'brightness(' + addEffectLevelClickHandler(3, 1, scaleControlValueCurrent) + ')';
     }
-
-    console.log(imgUploadPreview.style.filter);
   });
 
 
@@ -235,11 +232,8 @@
       y: evt.clientY
     };
 
-    var dragged = false;
-
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
-      dragged = true;
 
       var shift = {
         x: startCoords.x - moveEvt.clientX
@@ -253,7 +247,7 @@
 
       if (currentCoordinatePin > minWidthLvlLine && currentCoordinatePin < maxWidthLvlLine) {
         effectLevelPin.style.left = currentCoordinatePin + 'px';
-        scaleControlValueCurrent = Math.round((currentCoordinatePin * 100)/maxWidthLvlLine);
+        scaleControlValueCurrent = Math.round((currentCoordinatePin * 100) / maxWidthLvlLine);
         effectLevelDepth.style.width = scaleControlValueCurrent + '%';
       }
 
